@@ -2,6 +2,7 @@ import conf
 
 
 import discord
+import random
 from discord.utils import get
 from discord.ext import commands
 import img_handler as imhl
@@ -10,7 +11,6 @@ import os
 # # Настраиваем расширенный доступ Intents
 intense = discord.Intents.default()
 intense.members = True
-
 # # Создаём подключение бота
 # client = discord.Client(intents=intense)
 
@@ -102,7 +102,7 @@ intense.members = True
 # client.run(conf.bot_token)
 
 
-bot = commands.Bot(command_prefix= "!")
+bot = commands.Bot(command_prefix= "!", intents=intense)
 
 
 channel = 825340703084118046
@@ -132,7 +132,7 @@ async def command_repeat(ctx, *args):
 
 #*4 !get_member
 @bot.command(name="get_member")
-async def command_repeat(ctx, member: discord.Member=None):
+async def command_get_member(ctx, member: discord.Member=None):
     msg = None
     global channel
     if ctx.channel.id == channel:
@@ -148,7 +148,7 @@ async def command_repeat(ctx, member: discord.Member=None):
 
 #*5 !get_members
 @bot.command(name="get_members")
-async def command_repeat(ctx, *args):
+async def command_ger_members(ctx, *args):
     if ctx.channel.id == 825340703084118046:
         if ctx.author.guild.name == 'Bots':
             msg = ""
@@ -158,7 +158,7 @@ async def command_repeat(ctx, *args):
 
 #*6 !get_channels
 @bot.command(name="get_channels")
-async def command_repeat(ctx, *args):
+async def command_get_channels(ctx, *args):
     if ctx.channel.id == 825340703084118046:           
         msg = ""
         if ctx.author.guild.name == 'Bots':
@@ -169,7 +169,6 @@ async def command_repeat(ctx, *args):
 #*7 !mk
 @bot.command(name="mk")
 async def command_mk(ctx, f1: discord.Member=None, f2: discord.Member=bot.user):
-    msg = None
     global channel
     if ctx.channel.id == channel:
         if f1 and f2:
@@ -181,7 +180,6 @@ async def command_mk(ctx, f1: discord.Member=None, f2: discord.Member=bot.user):
 #*8 !mka
 @bot.command(name="mka")
 async def command_mka(ctx, f1: discord.Member=None, f2: discord.Member=bot.user):
-    msg = None
     global channel
     if ctx.channel.id == channel:
         if f1 and f2:
@@ -245,6 +243,56 @@ async def vc_ost(ctx, *args):
             await ctx.channel.send(msg)
             await voice_client.play(discord.FFmpegPCMAudio(executable="./sound/ffmpeg.exe", source="./sound/mk.mp3"))
         
+
+
+#*12 !fight
+@bot.command(name = "fight")
+async def command_fight(ctx):
+    msg = ""
+    global channel
+
+    if ctx.channel.id == channel:
+
+        voice_channel = ctx.author.voice.channel
+        
+        for q in ctx.author.voice.channel.members:
+            print(q.name)
+
+        if len(ctx.author.voice.channel.members) >= 2:
+            mas_member = ctx.author.voice.channel.members
+
+            idx_member = random.randint(0, len(mas_member)-1)
+            f1 = mas_member[idx_member]
+
+            idx_member = random.randint(0, len(mas_member)-1)
+            f2 = mas_member[idx_member]
+
+
+            msg = f'В бой вступают {f1.name} {f"({f1.nick})" if f1.nick else ""} и {f2.name} {f"({f2.nick})" if f2.nick else ""}'
+
+
+            await imhl.vs_create_animated(f1.avatar_url, f2.avatar_url, f1.name, f2.name)
+            # await voice_channel.connect()
+            await ctx.channel.send(msg)
+            await ctx.channel.send(file=discord.File(os.path.join("./img/result.gif")))
+            voice_client = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+            await voice_client.play(discord.FFmpegPCMAudio(executable="./sound/ffmpeg.exe", source="./sound/mk.mp3"))
+
+        elif len(ctx.author.voice.channel.members) == 1:
+
+            f1 = ctx.author.voice.channel.members[0]
+            f2 = bot.user
+
+            msg = f'В бой вступают {f1.name} {f"({f1.nick})" if f1.nick else ""} и {f2.name}'
+
+
+            await imhl.vs_create_animated(f1.avatar_url, f2.avatar_url)
+            # await voice_channel.connect()
+            await ctx.channel.send(msg)
+            await ctx.channel.send(file=discord.File(os.path.join("./img/result.gif")))
+            voice_client = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+            await voice_client.play(discord.FFmpegPCMAudio(executable="./sound/ffmpeg.exe", source="./sound/mk.mp3"))
+    
 
 
 bot.run(conf.bot_token)
