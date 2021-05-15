@@ -184,7 +184,7 @@ async def command_mka(ctx, f1: discord.Member=None, f2: discord.Member=bot.user)
     if ctx.channel.id == channel:
         if f1 and f2:
             # Передаём аватары обработчику
-            await imhl.vs_create_animated(f1.avatar_url, f2.avatar_url)
+            await imhl.vs_create_animated(f1.avatar_url, f2.avatar_url, f1.name, f2.name)
             # Отправляем полученный результат
             await ctx.channel.send(file=discord.File(os.path.join("./img/result.gif")))
 
@@ -286,7 +286,7 @@ async def command_fight(ctx):
             msg = f'В бой вступают {f1.name} {f"({f1.nick})" if f1.nick else ""} и {f2.name}'
 
 
-            await imhl.vs_create_animated(f1.avatar_url, f2.avatar_url)
+            await imhl.vs_create_animated(f1.avatar_url, f2.avatar_url, f1.name, f2.name)
             # await voice_channel.connect()
             await ctx.channel.send(msg)
             await ctx.channel.send(file=discord.File(os.path.join("./img/result.gif")))
